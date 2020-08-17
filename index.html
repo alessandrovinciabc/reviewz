@@ -1,14 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reviewz - spaced repetition system</title>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Reviewz - spaced repetition system</title>
 
-    <link rel="stylesheet" href="./styles.css">
-</head>
-<body>
-    
-    <script src="./main.js"></script>
-</body>
+        <!--Google Fonts-->
+        <link
+            href="https://fonts.googleapis.com/css2?family=Alata&family=Slabo+27px&display=swap"
+            rel="stylesheet"
+        />
+        <!--FontAwesome-->
+        <script src="https://kit.fontawesome.com/227c4e4a3b.js" crossorigin="anonymous"></script>
+
+        <!--My styles-->
+        <link rel="stylesheet" href="./styles.css" />
+    </head>
+    <body>
+        <div class="header">
+            <h1 class="header-text">💻Reviewz📝</h1>
+        </div>
+        <div class="main-container">
+            <div class="container-today">
+                <div class="section-header">
+                    <h2 class="today-header">Today's to-be reviewed</h2>
+                </div>
+                <div class="container-elements">
+                    <div class="today-element today-0">
+                        <div class="element-text">Review recursion recursively</div>
+                        <button class="today-confirm"><i class="far fa-check-circle"></i></button>
+                    </div>
+                    <div class="today-element today-1">
+                        <div class="element-text">Review recursion recursivelyaaaaaaaaaaa</div>
+                        <button class="today-confirm"><i class="far fa-check-circle"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="container-entries">
+                <div class="section-header">
+                    <h2 class="entries-header">Entries</h2>
+                    <hr />
+                </div>
+                <div class="container-elements">
+
+                </div>
+            </div>
+        </div>
+        <div class="footer"></div>
+
+        <script src="./main.js"></script>
+    </body>
 </html>
