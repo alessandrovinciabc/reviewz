@@ -78,8 +78,24 @@ font-family: 'Slabo 27px', serif;
     font-size: 1rem;
 }
 
+.entry-element{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+
+    margin-bottom: 0.5rem;
+
+    width: 100%;
+
+    word-break: break-word;
+    font-family: 'Alata', sans-serif;
+    font-size: 1rem;
+}
+
 .element-text{
     margin-left: 15px;
+    width: 80%;
 }
 
 .today-confirm{
@@ -95,6 +111,76 @@ font-family: 'Slabo 27px', serif;
 .today-confirm:active{
     color: green;
 }
+
+.entry-buttons{
+    margin-left: auto;
+}
+
+.entry-buttons>button{
+    outline: none;
+    cursor: pointer;
+    outline: none;
+    background-color: transparent;
+    color: #00b7c2;
+    font-size: 2rem;
+}
+
+.entry-buttons>button>.fas{
+    padding: 5px;
+}
+
+.add-entry{
+    margin-left: auto;
+    outline: none;
+    cursor: pointer;
+    outline: none;
+    background-color: transparent;
+    color: #00b7c2;
+    font-size: 1.8rem;
+}
+
+.add-entry:active{
+    color: green;
+}
+
+.entry-confirm{
+    margin-left: auto;
+    outline: none;
+    cursor: pointer;
+    outline: none;
+    background-color: transparent;
+    color: #00b7c2;
+    font-size: 2rem;
+}
+
+.entry-confirm:active{
+    color: green;
+}
+
+.new-element{
+    background-color: #0f4c75;
+    border-radius: 5px;
+}
+
+#desc{
+    font-size: 1.5rem;
+    border: 1px solid black;
+    width: 80%;
+}
+
+.info-mode{
+    background-color: #fdcb9e;
+    border-radius: 5px;
+}
+
+.info-btn:active{
+    color: #0f4c75;
+}
+
+.delete-btn:active{
+    color: red;
+}
+
 
 .footer {
 }

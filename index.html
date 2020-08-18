@@ -11,7 +11,10 @@
             rel="stylesheet"
         />
         <!--FontAwesome-->
-        <script src="https://kit.fontawesome.com/227c4e4a3b.js" crossorigin="anonymous"></script>
+        <script
+            src="https://kit.fontawesome.com/227c4e4a3b.js"
+            crossorigin="anonymous"
+        ></script>
 
         <!--My styles-->
         <link rel="stylesheet" href="./styles.css" />
@@ -26,7 +29,9 @@
                     <h2 class="today-header">Today's to-be reviewed</h2>
                 </div>
                 <div class="container-elements">
-                    <div class="today-element today-0">
+                    
+                    <!--Template for today's elements-->
+                        <div class="today-element today-0">
                         <div class="element-text">Review recursion recursively</div>
                         <button class="today-confirm"><i class="far fa-check-circle"></i></button>
                     </div>
@@ -34,15 +39,37 @@
                         <div class="element-text">Review recursion recursivelyaaaaaaaaaaa</div>
                         <button class="today-confirm"><i class="far fa-check-circle"></i></button>
                     </div>
+                   
                 </div>
             </div>
             <div class="container-entries">
                 <div class="section-header">
-                    <h2 class="entries-header">Entries</h2>
+                    <h2 class="entries-header">Entries<button class="add-entry"><i class="fas fa-plus-circle"></i></button></h2>
                     <hr />
                 </div>
                 <div class="container-elements">
 
+                    <!--Template for new element form-->
+                    <div class="entry-element new-element">
+                        <div class="element-text">
+                            <input type="text" name="elementDesc" id="desc">
+                        </div>
+                        <div class="entry-buttons">
+                            <button class="entry-confirm"><i class="far fa-check-circle"></i></button>
+                            <button class="delete-btn"><i class="fas fa-trash-alt"></i></button>
+                        </div>
+                    </div>
+
+                    <!--Template for entry elements-->
+                    <div class="entry-element entry-0">
+                        <div class="element-text">
+                            Review recursion recursively
+                        </div>
+                        <div class="entry-buttons">
+                            <button class="info-btn"><i class="fas fa-info"></i></button>
+                            <button class="delete-btn"><i class="fas fa-trash-alt"></i></button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
