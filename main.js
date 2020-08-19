@@ -156,6 +156,11 @@ var UIController = (function () {
                     }
     
                     tabs[0].tab.classList.add("selected-tab");
+                } else {
+                    tabs[0].content.style.width = "100%";
+                    for (var i = 1; i < tabs.length; ++i){
+                        tabs[i].content.style.display = 'none';
+                    }
                 }
             })
         },

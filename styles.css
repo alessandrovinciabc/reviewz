@@ -235,12 +235,4 @@ hr{
     .choose-tab{
         display: flex;
     }
-
-    .container-entries {
-      display: none;
-    }
-
-    .container-today {
-        width: 100%;
-    }
   }
