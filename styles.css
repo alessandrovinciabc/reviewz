@@ -200,3 +200,47 @@ hr{
     border-radius: 5px;
     width: 20%;
 }
+
+.choose-tab{
+    display: none;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    background-color: #eeeeee;
+
+    font-family: 'Slabo 27px', serif;
+}
+
+.tab{
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    background-color: #eeeeee;
+
+    cursor: pointer;
+}
+
+.selected-tab{
+    background-color: #fdcb9e;
+    border-radius: 10px 10px 0 0;
+}
+
+.tab-join{
+    height: 5px;
+    width: 100%;
+    background-color: #fdcb9e;
+}
+
+@media only screen and (max-width: 800px) {
+    .choose-tab{
+        display: flex;
+    }
+
+    .container-entries {
+      display: none;
+    }
+
+    .container-today {
+        width: 100%;
+    }
+  }
