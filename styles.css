@@ -146,6 +146,7 @@ font-family: 'Slabo 27px', serif;
 .new-element{
     background-color: #0f4c75;
     border-radius: 5px;
+    width: 80%;
 }
 
 #desc{
@@ -154,13 +155,8 @@ font-family: 'Slabo 27px', serif;
     width: 80%;
 }
 
-.info-mode{
-    background-color: #fdcb9e;
-    border-radius: 5px;
-}
-
-.info-btn:active{
-    color: #0f4c75;
+.entry-info{
+    color: #cccccc;
 }
 
 .delete-btn:active{
