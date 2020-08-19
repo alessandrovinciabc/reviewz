@@ -25,7 +25,7 @@ font-family: 'Slabo 27px', serif;
     justify-content: center;
     align-items: stretch;
     flex-wrap: wrap;
-    min-height: 87vh;
+    min-height: calc(87vh - 5px);
 }
 
 .container-today {
