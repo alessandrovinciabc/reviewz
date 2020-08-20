@@ -5,36 +5,44 @@ var dataController = (function () {
     var StudyEntry = function (desc, id) {
         this.id = id;
         this.desc = desc;
-        this.date = new Date();
+        this.date = moment();
         this.reviewsLeft = 9; //1h, 1d, 3d, 7d, 14d, 21d, 28d, 2m, 3m
     };
 
     StudyEntry.prototype.getDateString = function () {
-        var day, month, year, months;
+        return this.date.format("Do MMM YYYY");
+    };
 
-        months = [
-            "Jan",
-            "Feb",
-            "Mar",
-            "Apr",
-            "May",
-            "Jun",
-            "Jul",
-            "Aug",
-            "Sep",
-            "Oct",
-            "Nov",
-            "Dec",
-        ];
-
-        day = this.date.getDate();
-
-        month = this.date.getMonth();
-        month = months[month];
-
-        year = this.date.getFullYear();
-
-        return day + " " + month + " " + year;
+    StudyEntry.prototype.getDateNext = function () {
+        switch (this.reviewsLeft) {
+            case 9:
+                this.date.add(1, 'h');
+                break;
+            case 8:
+                this.date.add(1, 'd');
+                break;
+            case 7:
+                this.date.add(3, 'd');
+                break;
+            case 6:
+                this.date.add(7, 'd');
+                break;
+            case 5:
+                this.date.add(14, 'd');
+                break;
+            case 4:
+                this.date.add(21, 'd');
+                break;
+            case 3:
+                this.date.add(28, 'd');
+                break;
+            case 2:
+                this.date.add(2, 'M');
+                break;
+            case 1:
+                this.date.add(3, 'M');
+                break;
+        }
     };
 
     return {
@@ -58,14 +66,15 @@ var dataController = (function () {
 
 var UIController = (function () {
     var DOM = {
-        addEntryText: "#desc",
-        addEntryBtn: ".entry-confirm",
-        addEntryCancel: ".entry-cancel",
-        entries: ".container-entries > .container-elements",
-        tabToday: ".today-tab",
-        tabEntries: ".entries-tab",
-        todayContainer: ".container-today",
-        entriesContainer: ".container-entries",
+        addEntryText: '#desc',
+        addEntryBtn: '.entry-confirm',
+        addEntryCancel: '.entry-cancel',
+        entries: '.container-entries > .container-elements',
+        today: '.container-today > .container-elements',
+        tabToday: '.today-tab',
+        tabEntries: '.entries-tab',
+        todayContainer: '.container-today',
+        entriesContainer: '.container-entries',
     };
 
     var Tab = function (tab, content) {
@@ -126,7 +135,25 @@ var UIController = (function () {
             DOMentries.insertAdjacentHTML("afterbegin", newEntry);
         },
 
-        updateToday: function () {},
+        updateToday: function (entries) {
+            var todaysDate, todayTemplate, newToday;
+            todaysDate = moment();
+
+            todayTemplate = '<div class="today-element today-%id%"><div class="element-text">%desc%</div><button class="today-confirm"><i class="far fa-check-circle"></i></button></div>';
+
+            document.querySelector(DOM.today).innerHTML = '';
+
+            entries.forEach(function(current){
+                newToday = todayTemplate;
+                if(current.date.isSame(todaysDate, 'day')){
+                    newToday = todayTemplate.replace('%desc%', current.desc);
+                    newToday = newToday.replace('%id', current.id);
+
+                    document.querySelector(DOM.today).insertAdjacentHTML('beforeend', newToday);
+
+                }
+            });
+        },
 
         switchTab: function (tabs, selected) {
             tabs.forEach(function (current, index) {
@@ -146,7 +173,7 @@ var UIController = (function () {
 
         initTabs: function () {
             var mqPage = window.matchMedia("(max-width: 800px)");
-    
+
             mqPage.addListener(function (e) {
                 if (!e.matches) {
                     for (var i = 0; i < tabs.length; ++i) {
@@ -154,18 +181,16 @@ var UIController = (function () {
                         tabs[i].content.style.width = "50%";
                         tabs[i].tab.classList.remove("selected-tab");
                     }
-    
+
                     tabs[0].tab.classList.add("selected-tab");
                 } else {
                     tabs[0].content.style.width = "100%";
-                    for (var i = 1; i < tabs.length; ++i){
-                        tabs[i].content.style.display = 'none';
+                    for (var i = 1; i < tabs.length; ++i) {
+                        tabs[i].content.style.display = "none";
                     }
                 }
-            })
+            });
         },
-
-
     };
 })();
 
@@ -217,6 +242,8 @@ var controller = (function (data, ui) {
             ui.clearForm();
             ui.displayEntry(data.getItems()[data.getItems().length - 1]);
 
+            ui.updateToday(data.getItems());
+
             console.log(data.getItems()); //debug
         }
     };
@@ -225,6 +252,7 @@ var controller = (function (data, ui) {
         init: function () {
             setupEventListeners();
             ui.initTabs();
+            ui.updateToday(data.getItems());
         },
     };
 })(dataController, UIController);
