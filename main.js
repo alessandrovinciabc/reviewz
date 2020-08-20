@@ -119,7 +119,7 @@ var UIController = (function () {
             DOMentries = document.querySelector(DOM.entries);
 
             newEntryTemplate =
-                '<div class="entry-element entry-%entryId%"><div class="element-text"><span class="entry-info">Last Review: %date% - %reviews% more left<br></span>%desc%</div><div class="entry-buttons"><button class="info-btn"><i class="fas fa-info"></i></button><button class="delete-btn"><i class="fas fa-trash-alt"></i></button></div></div>';
+                '<div class="entry-element entry-%entryId%"><div class="element-text"><span class="entry-info">Last Review: %date% - %reviews% more left<br></span>%desc%</div><div class="entry-buttons"><button class="delete-btn"><i class="fas fa-trash-alt"></i></button></div></div>';
 
             newEntry = newEntryTemplate.replace("%entryId%", entryToDisplay.id);
             newEntry = newEntry.replace("%desc%", entryToDisplay.desc);
