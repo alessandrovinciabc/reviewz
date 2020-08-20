@@ -129,6 +129,10 @@ font-family: 'Slabo 27px', serif;
     padding: 5px;
 }
 
+.today-confirm>i{
+    padding: 5px;
+}
+
 .entry-confirm{
     margin-left: auto;
     outline: none;
