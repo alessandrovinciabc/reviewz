@@ -187,6 +187,8 @@ font-family: 'Slabo 27px', serif;
     color: #fdcb9e;
     background-color: #0f4c75;
     border-radius: 5px;
+
+    user-select: none;
 }
 
 .section-header{
@@ -218,6 +220,8 @@ hr{
     background-color: #eeeeee;
 
     font-family: 'Slabo 27px', serif;
+
+    user-select: none;
 }
 
 .tab{
