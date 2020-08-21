@@ -49,26 +49,31 @@ var dataController = (function () {
         this.reviewsLeft--;
     };
 
-    StudyEntry.prototype.formatReview = function () {
-        switch (this.reviewsLeft) {
+    StudyEntry.prototype.formatReview = function (offset) {
+        if(!offset){
+            offset = 0;
+        }
+        switch (this.reviewsLeft + offset) {
+            case 10:
+                return 'now';
             case 9:
-                return "+1h";
+                return "1h";
             case 8:
-                return "+1d";
+                return "1d";
             case 7:
-                return "+3d";
+                return "3d";
             case 6:
-                return "+7d";
+                return "7d";
             case 5:
-                return "+14d";
+                return "14d";
             case 4:
-                return "+21d";
+                return "21d";
             case 3:
-                return "+28d";
+                return "28d";
             case 2:
-                return "+2m";
+                return "2m";
             case 1:
-                return "+3m";
+                return "3m";
         }
     };
 
@@ -168,9 +173,10 @@ var UIController = (function () {
                     "%reviews%",
                     current.reviewsLeft
                 );
+
                 newEntry = newEntry.replace(
                     "%nextreview%",
-                    current.formatReview()
+                    current.formatReview(+1)
                 );
 
                 DOMentries.insertAdjacentHTML("afterbegin", newEntry);
@@ -182,7 +188,7 @@ var UIController = (function () {
             todaysDate = moment();
 
             todayTemplate =
-                '<div class="today-element today-%id%"><div class="element-text">%desc%</div><div class="next-review-text">%nextreview%</div><button class="today-confirm"><i class="far fa-check-circle"></i></button></div>';
+                '<div class="today-element today-%id%"><div class="element-text">%desc%</div><div class="next-review-text">+%nextreview%</div><button class="today-confirm"><i class="far fa-check-circle"></i></button></div>';
 
             document.querySelector(DOM.today).innerHTML = "";
 
