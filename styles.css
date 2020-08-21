@@ -98,6 +98,10 @@ font-family: 'Slabo 27px', serif;
     width: 80%;
 }
 
+.next-review-text{
+    margin-left: auto;
+}
+
 .today-confirm{
     margin-left: auto;
     outline: none;

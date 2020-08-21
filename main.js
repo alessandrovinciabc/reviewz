@@ -1,6 +1,7 @@
 var dataController = (function () {
-    //1. Store data in an array
     var entriesArr = [];
+
+    //1. Get data from local storage
 
     var StudyEntry = function (desc, id) {
         this.id = id;
@@ -48,6 +49,29 @@ var dataController = (function () {
         this.reviewsLeft--;
     };
 
+    StudyEntry.prototype.formatReview = function () {
+        switch (this.reviewsLeft) {
+            case 9:
+                return "1h";
+            case 8:
+                return "1d";
+            case 7:
+                return "3d";
+            case 6:
+                return "7d";
+            case 5:
+                return "14d";
+            case 4:
+                return "21d";
+            case 3:
+                return "28d";
+            case 2:
+                return "2m";
+            case 1:
+                return "3m";
+        }
+    };
+
     return {
         addItem: function (newItem) {
             var newId, lastEntryId;
@@ -59,6 +83,8 @@ var dataController = (function () {
                 newId = 0;
             }
             entriesArr.push(new StudyEntry(newItem, newId));
+
+            //2. Save data to local storage too
         },
 
         getItems: function () {
@@ -116,26 +142,39 @@ var UIController = (function () {
             document.querySelector(DOM.addEntryText).value = "";
         },
 
-        displayEntry: function (entryToDisplay) {
+        updateEntries: function (entries) {
             var newEntryTemplate, newEntry, DOMentries;
 
             DOMentries = document.querySelector(DOM.entries);
 
+            DOMentries.innerHTML = "";
+
             newEntryTemplate =
-                '<div class="entry-element entry-%entryId%"><div class="element-text"><span class="entry-info">Last Review: %date% - %reviews% more left<br></span>%desc%</div><div class="entry-buttons"><button class="delete-btn"><i class="fas fa-trash-alt"></i></button></div></div>';
+                '<div class="entry-element entry-%entryId%"><div class="element-text"><span class="entry-info">Last Review: %date% - %reviews% more left - Next: %nextreview%<br></span>%desc%</div><div class="entry-buttons"><button class="delete-btn"><i class="fas fa-trash-alt"></i></button></div></div>';
 
-            newEntry = newEntryTemplate.replace("%entryId%", entryToDisplay.id);
-            newEntry = newEntry.replace("%desc%", entryToDisplay.desc);
-            newEntry = newEntry.replace(
-                "%date%",
-                entryToDisplay.getDateString()
-            );
-            newEntry = newEntry.replace(
-                "%reviews%",
-                entryToDisplay.reviewsLeft
-            );
+            entries.forEach(function (current) {
+                newEntry = newEntryTemplate;
 
-            DOMentries.insertAdjacentHTML("afterbegin", newEntry);
+                newEntry = newEntryTemplate.replace(
+                    "%entryId%",
+                    current.id
+                );
+                newEntry = newEntry.replace("%desc%", current.desc);
+                newEntry = newEntry.replace(
+                    "%date%",
+                    current.getDateString()
+                );
+                newEntry = newEntry.replace(
+                    "%reviews%",
+                    current.reviewsLeft
+                );
+                newEntry = newEntry.replace(
+                    "%nextreview%",
+                    current.formatReview()
+                );
+
+                DOMentries.insertAdjacentHTML("afterbegin", newEntry);
+            });
         },
 
         updateToday: function (entries) {
@@ -143,7 +182,7 @@ var UIController = (function () {
             todaysDate = moment();
 
             todayTemplate =
-                '<div class="today-element today-%id%"><div class="element-text">%desc%</div><button class="today-confirm"><i class="far fa-check-circle"></i></button></div>';
+                '<div class="today-element today-%id%"><div class="element-text">%desc%</div><div class="next-review-text">%nextreview%</div><button class="today-confirm"><i class="far fa-check-circle"></i></button></div>';
 
             document.querySelector(DOM.today).innerHTML = "";
 
@@ -154,7 +193,11 @@ var UIController = (function () {
                     current.date.isBefore(todaysDate, "day")
                 ) {
                     newToday = todayTemplate.replace("%desc%", current.desc);
-                    newToday = newToday.replace("%id", current.id);
+                    newToday = newToday.replace("%id%", current.id);
+                    newToday = newToday.replace(
+                        "%nextreview%",
+                        current.formatReview()
+                    );
 
                     document
                         .querySelector(DOM.today)
@@ -230,6 +273,30 @@ var controller = (function (data, ui) {
         });
 
         document
+            .querySelector(DOM.today)
+            .addEventListener("click", function (event) {
+                var indexOfElement, clickedElement;
+
+                indexOfElement = event.target.parentNode.parentNode.classList[1].replace(
+                    "today-",
+                    ""
+                );
+                indexOfElement = parseInt(indexOfElement);
+
+                if (
+                    event.target.parentNode.classList.contains("today-confirm")
+                ) {
+                    clickedElement = data.getItems()[indexOfElement];
+
+                    clickedElement.getDateNext();
+                    ui.updateToday(data.getItems());
+                    ui.updateEntries(data.getItems());
+
+                    console.log(data.getItems()); //debug
+                }
+            });
+
+        document
             .querySelector(DOM.tabToday)
             .addEventListener("click", function () {
                 ui.switchTab(ui.tabs, ui.tabs[0]);
@@ -248,8 +315,8 @@ var controller = (function (data, ui) {
         if (newEntry !== "") {
             data.addItem(newEntry);
             ui.clearForm();
-            ui.displayEntry(data.getItems()[data.getItems().length - 1]);
 
+            ui.updateEntries(data.getItems());
             ui.updateToday(data.getItems());
 
             console.log(data.getItems()); //debug
