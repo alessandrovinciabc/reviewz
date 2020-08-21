@@ -7,6 +7,7 @@ var dataController = (function () {
         this.id = id;
         this.desc = desc;
         this.date = moment();
+        this.lastReview = moment();
         this.reviewsLeft = 9; //1h, 1d, 3d, 7d, 14d, 21d, 28d, 2m, 3m
     };
 
@@ -14,8 +15,13 @@ var dataController = (function () {
         return this.date.format("Do MMM YYYY");
     };
 
+    StudyEntry.prototype.getLastReview = function(){
+        return this.lastReview.format("Do MMM YYYY");
+    }
+
     StudyEntry.prototype.getDateNext = function () {
         this.date = moment();
+        this.lastReview = moment();
         switch (this.reviewsLeft) {
             case 9:
                 this.date.add(1, "h");
@@ -167,7 +173,7 @@ var UIController = (function () {
                 newEntry = newEntry.replace("%desc%", current.desc);
                 newEntry = newEntry.replace(
                     "%date%",
-                    current.getDateString()
+                    current.getLastReview()
                 );
                 newEntry = newEntry.replace(
                     "%reviews%",
