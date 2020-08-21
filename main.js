@@ -238,6 +238,7 @@ var UIController = (function () {
             var mqPage = window.matchMedia("(max-width: 800px)");
 
             mqPage.addListener(function (e) {
+                console.log(e.matches);
                 if (!e.matches) {
                     for (var i = 0; i < tabs.length; ++i) {
                         tabs[i].content.style.display = "flex";

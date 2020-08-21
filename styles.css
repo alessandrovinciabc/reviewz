@@ -254,6 +254,11 @@ hr{
     }
 
     .container-today, .container-entries {
+        width: 100%;
         border: none;
+    }
+
+    .container-entries {
+        display: none;
     }
   }
