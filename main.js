@@ -52,23 +52,23 @@ var dataController = (function () {
     StudyEntry.prototype.formatReview = function () {
         switch (this.reviewsLeft) {
             case 9:
-                return "1h";
+                return "+1h";
             case 8:
-                return "1d";
+                return "+1d";
             case 7:
-                return "3d";
+                return "+3d";
             case 6:
-                return "7d";
+                return "+7d";
             case 5:
-                return "14d";
+                return "+14d";
             case 4:
-                return "21d";
+                return "+21d";
             case 3:
-                return "28d";
+                return "+28d";
             case 2:
-                return "2m";
+                return "+2m";
             case 1:
-                return "3m";
+                return "+3m";
         }
     };
 
@@ -277,15 +277,15 @@ var controller = (function (data, ui) {
             .addEventListener("click", function (event) {
                 var indexOfElement, clickedElement;
 
-                indexOfElement = event.target.parentNode.parentNode.classList[1].replace(
-                    "today-",
-                    ""
-                );
-                indexOfElement = parseInt(indexOfElement);
-
                 if (
                     event.target.parentNode.classList.contains("today-confirm")
                 ) {
+                    indexOfElement = event.target.parentNode.parentNode.classList[1].replace(
+                        "today-",
+                        ""
+                    );
+                    indexOfElement = parseInt(indexOfElement);
+
                     clickedElement = data.getItems()[indexOfElement];
 
                     clickedElement.getDateNext();
