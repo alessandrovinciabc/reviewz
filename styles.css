@@ -229,13 +229,17 @@ hr{
     justify-content: center;
     width: 100%;
     background-color: #eeeeee;
+    border-radius: 10px 10px 0 0;
 
     cursor: pointer;
 }
 
-.selected-tab{
+.tab:hover{
+    background-color: #FEE5CF;
+}
+
+.tab.selected-tab{
     background-color: #fdcb9e;
-    border-radius: 10px 10px 0 0;
 }
 
 .tab-join{
