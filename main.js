@@ -15,9 +15,9 @@ var dataController = (function () {
         return this.date.format("Do MMM YYYY");
     };
 
-    StudyEntry.prototype.getLastReview = function(){
+    StudyEntry.prototype.getLastReview = function () {
         return this.lastReview.format("Do MMM YYYY");
-    }
+    };
 
     StudyEntry.prototype.getDateNext = function () {
         this.date = moment();
@@ -56,12 +56,12 @@ var dataController = (function () {
     };
 
     StudyEntry.prototype.formatReview = function (offset) {
-        if(!offset){
+        if (!offset) {
             offset = 0;
         }
         switch (this.reviewsLeft + offset) {
             case 10:
-                return 'now';
+                return "now";
             case 9:
                 return "1h";
             case 8:
@@ -96,6 +96,14 @@ var dataController = (function () {
             entriesArr.push(new StudyEntry(newItem, newId));
 
             //2. Save data to local storage too
+        },
+
+        removeItem: function (id) {
+            entriesArr.forEach(function (element, index) {
+                if (element.id === id) {
+                    entriesArr.splice(index, 1);
+                }
+            });
         },
 
         getItems: function () {
@@ -161,24 +169,15 @@ var UIController = (function () {
             DOMentries.innerHTML = "";
 
             newEntryTemplate =
-                '<div class="entry-element entry-%entryId%"><div class="element-text"><span class="entry-info">Last Review: %date% - %reviews% more left - Next: %nextreview%<br></span>%desc%</div><div class="entry-buttons"><button class="delete-btn"><i class="fas fa-trash-alt"></i></button></div></div>';
+                '<div class="entry-element entry-%entryId% entry"><div class="element-text"><span class="entry-info">Last Review: %date% - %reviews% more left - Next: %nextreview%<br></span>%desc%</div><div class="entry-buttons"><button class="delete-btn"><i class="fas fa-trash-alt"></i></button></div></div>';
 
             entries.forEach(function (current) {
                 newEntry = newEntryTemplate;
 
-                newEntry = newEntryTemplate.replace(
-                    "%entryId%",
-                    current.id
-                );
+                newEntry = newEntryTemplate.replace("%entryId%", current.id);
                 newEntry = newEntry.replace("%desc%", current.desc);
-                newEntry = newEntry.replace(
-                    "%date%",
-                    current.getLastReview()
-                );
-                newEntry = newEntry.replace(
-                    "%reviews%",
-                    current.reviewsLeft
-                );
+                newEntry = newEntry.replace("%date%", current.getLastReview());
+                newEntry = newEntry.replace("%reviews%", current.reviewsLeft);
 
                 newEntry = newEntry.replace(
                     "%nextreview%",
@@ -261,6 +260,75 @@ var UIController = (function () {
 var controller = (function (data, ui) {
     var DOM = ui.DOM;
 
+    var addItem = function () {
+        var newEntry = ui.getForm();
+
+        if (newEntry !== "") {
+            data.addItem(newEntry);
+            ui.clearForm();
+
+            ui.updateEntries(data.getItems());
+            ui.updateToday(data.getItems());
+
+            console.log(data.getItems()); //debug
+        }
+    };
+
+    var removeItem = function (event) {
+        var id, index;
+
+        if (
+            event.target.parentNode.parentNode.parentNode.classList.contains(
+                "entry"
+            )
+        ) {
+            id = event.target.parentNode.parentNode.parentNode.classList[1].replace(
+                "entry-",
+                ""
+            );
+            id = parseInt(id);
+
+            data.getItems().forEach(function (current, i) {
+                if (current.id === id) {
+                    index = i;
+                }
+            });
+
+            data.getItems().splice(index, 1);
+
+            ui.updateToday(data.getItems());
+            ui.updateEntries(data.getItems());
+
+            console.log(data.getItems()); //debug
+        }
+    };
+
+    var confirmReview = function (event) {
+        var id, indexOfElement, clickedElement;
+
+        if (event.target.parentNode.classList.contains("today-confirm")) {
+            id = event.target.parentNode.parentNode.classList[1].replace(
+                "today-",
+                ""
+            );
+            id = parseInt(id);
+
+            data.getItems().forEach(function (current, index) {
+                if (current.id === id) {
+                    indexOfElement = index;
+                }
+            });
+
+            clickedElement = data.getItems()[indexOfElement];
+
+            clickedElement.getDateNext();
+            ui.updateToday(data.getItems());
+            ui.updateEntries(data.getItems());
+
+            console.log(data.getItems()); //debug
+        }
+    };
+
     var setupEventListeners = function () {
         document
             .querySelector(DOM.addEntryBtn)
@@ -287,27 +355,7 @@ var controller = (function (data, ui) {
 
         document
             .querySelector(DOM.today)
-            .addEventListener("click", function (event) {
-                var indexOfElement, clickedElement;
-
-                if (
-                    event.target.parentNode.classList.contains("today-confirm")
-                ) {
-                    indexOfElement = event.target.parentNode.parentNode.classList[1].replace(
-                        "today-",
-                        ""
-                    );
-                    indexOfElement = parseInt(indexOfElement);
-
-                    clickedElement = data.getItems()[indexOfElement];
-
-                    clickedElement.getDateNext();
-                    ui.updateToday(data.getItems());
-                    ui.updateEntries(data.getItems());
-
-                    console.log(data.getItems()); //debug
-                }
-            });
+            .addEventListener("click", confirmReview);
 
         document
             .querySelector(DOM.tabToday)
@@ -320,20 +368,10 @@ var controller = (function (data, ui) {
             .addEventListener("click", function () {
                 ui.switchTab(ui.tabs, ui.tabs[1]);
             });
-    };
 
-    var addItem = function () {
-        var newEntry = ui.getForm();
-
-        if (newEntry !== "") {
-            data.addItem(newEntry);
-            ui.clearForm();
-
-            ui.updateEntries(data.getItems());
-            ui.updateToday(data.getItems());
-
-            console.log(data.getItems()); //debug
-        }
+        document
+            .querySelector(DOM.entriesContainer)
+            .addEventListener("click", removeItem);
     };
 
     return {
