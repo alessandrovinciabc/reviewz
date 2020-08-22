@@ -379,6 +379,7 @@ var controller = (function (data, ui) {
             setupEventListeners();
             ui.initTabs();
             ui.updateToday(data.getItems());
+            ui.updateEntries(data.getItems());
         },
     };
 })(dataController, UIController);
