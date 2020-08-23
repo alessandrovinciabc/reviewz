@@ -137,17 +137,17 @@ var dataController = (function () {
             var stringDB, reconverted, final;
 
             stringDB = localStorage.getItem('db');
-            reconverted = JSON.parse(stringDB);
+            reconverted = JSON.parse(stringDB) || [];
             final = [];
     
-            reconverted.forEach(function(el, ind){
+            reconverted.forEach(function(el){
                 var processed;
                 processed = convertElement(el);
     
                 final.push(processed);
             });
 
-            entriesArr = final || [];
+            entriesArr = final;
         },
     };
 })();
@@ -276,7 +276,6 @@ var UIController = (function () {
             var mqPage = window.matchMedia("(max-width: 800px)");
 
             mqPage.addListener(function (e) {
-                console.log(e.matches);
                 if (!e.matches) {
                     for (var i = 0; i < tabs.length; ++i) {
                         tabs[i].content.style.display = "flex";
