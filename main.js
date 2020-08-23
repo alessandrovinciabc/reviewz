@@ -83,6 +83,21 @@ var dataController = (function () {
         }
     };
 
+    var convertElement = function(el){
+        var temp;
+
+        temp = new StudyEntry();
+        Object.assign(temp, el);
+
+        temp.id = parseInt(temp.id);
+
+        temp.date = moment(temp.date);
+        temp.lastReview = moment(temp.lastReview);
+        temp.reviewsLeft = parseInt(temp.reviewsLeft);
+
+        return temp;
+    };
+
     return {
         addItem: function (newItem) {
             var newId, lastEntryId;
@@ -95,7 +110,7 @@ var dataController = (function () {
             }
             entriesArr.push(new StudyEntry(newItem, newId));
 
-            //2. Save data to local storage too
+            this.saveDB();
         },
 
         removeItem: function (id) {
@@ -104,10 +119,35 @@ var dataController = (function () {
                     entriesArr.splice(index, 1);
                 }
             });
+            this.saveDB();
         },
 
         getItems: function () {
             return entriesArr;
+        },
+
+        saveDB: function(){
+            var convertedArr;
+
+            convertedArr = JSON.stringify(entriesArr) || [];
+            localStorage.setItem('db', convertedArr);
+        },
+
+        fetchDB: function(){
+            var stringDB, reconverted, final;
+
+            stringDB = localStorage.getItem('db');
+            reconverted = JSON.parse(stringDB);
+            final = [];
+    
+            reconverted.forEach(function(el, ind){
+                var processed;
+                processed = convertElement(el);
+    
+                final.push(processed);
+            });
+
+            entriesArr = final || [];
         },
     };
 })();
@@ -200,8 +240,7 @@ var UIController = (function () {
             entries.forEach(function (current) {
                 newToday = todayTemplate;
                 if (
-                    current.date.isSame(todaysDate, "day") ||
-                    current.date.isBefore(todaysDate, "day")
+                    current.date.isSameOrBefore(todaysDate, "day")
                 ) {
                     newToday = todayTemplate.replace("%desc%", current.desc);
                     newToday = newToday.replace("%id%", current.id);
@@ -288,13 +327,7 @@ var controller = (function (data, ui) {
             );
             id = parseInt(id);
 
-            data.getItems().forEach(function (current, i) {
-                if (current.id === id) {
-                    index = i;
-                }
-            });
-
-            data.getItems().splice(index, 1);
+            data.removeItem(id);
 
             ui.updateToday(data.getItems());
             ui.updateEntries(data.getItems());
@@ -320,8 +353,9 @@ var controller = (function (data, ui) {
             });
 
             clickedElement = data.getItems()[indexOfElement];
-
             clickedElement.getDateNext();
+
+            data.saveDB();
             ui.updateToday(data.getItems());
             ui.updateEntries(data.getItems());
 
@@ -376,6 +410,7 @@ var controller = (function (data, ui) {
 
     return {
         init: function () {
+            data.fetchDB();
             setupEventListeners();
             ui.initTabs();
             ui.updateToday(data.getItems());
