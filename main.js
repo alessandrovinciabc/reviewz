@@ -80,10 +80,12 @@ var dataController = (function () {
                 return "2m";
             case 1:
                 return "3m";
+            case 0:
+                return "DONE!";
         }
     };
 
-    var convertElement = function(el){
+    var convertElement = function (el) {
         var temp;
 
         temp = new StudyEntry();
@@ -126,24 +128,24 @@ var dataController = (function () {
             return entriesArr;
         },
 
-        saveDB: function(){
+        saveDB: function () {
             var convertedArr;
 
             convertedArr = JSON.stringify(entriesArr) || [];
-            localStorage.setItem('db', convertedArr);
+            localStorage.setItem("db", convertedArr);
         },
 
-        fetchDB: function(){
+        fetchDB: function () {
             var stringDB, reconverted, final;
 
-            stringDB = localStorage.getItem('db');
+            stringDB = localStorage.getItem("db");
             reconverted = JSON.parse(stringDB) || [];
             final = [];
-    
-            reconverted.forEach(function(el){
+
+            reconverted.forEach(function (el) {
                 var processed;
                 processed = convertElement(el);
-    
+
                 final.push(processed);
             });
 
@@ -217,7 +219,7 @@ var UIController = (function () {
                 newEntry = newEntryTemplate.replace("%entryId%", current.id);
                 newEntry = newEntry.replace("%desc%", current.desc);
                 newEntry = newEntry.replace("%date%", current.getLastReview());
-                newEntry = newEntry.replace("%reviews%", current.reviewsLeft);
+                newEntry = newEntry.replace("%reviews%", current.reviewsLeft + 1);
 
                 newEntry = newEntry.replace(
                     "%nextreview%",
@@ -238,20 +240,23 @@ var UIController = (function () {
             document.querySelector(DOM.today).innerHTML = "";
 
             entries.forEach(function (current) {
-                newToday = todayTemplate;
-                if (
-                    current.date.isSameOrBefore(todaysDate, "day")
-                ) {
-                    newToday = todayTemplate.replace("%desc%", current.desc);
-                    newToday = newToday.replace("%id%", current.id);
-                    newToday = newToday.replace(
-                        "%nextreview%",
-                        current.formatReview()
-                    );
+                if (current.reviewsLeft > -1) {
+                    newToday = todayTemplate;
+                    if (current.date.isSameOrBefore(todaysDate, "day")) {
+                        newToday = todayTemplate.replace(
+                            "%desc%",
+                            current.desc
+                        );
+                        newToday = newToday.replace("%id%", current.id);
+                        newToday = newToday.replace(
+                            "%nextreview%",
+                            current.formatReview()
+                        );
 
-                    document
-                        .querySelector(DOM.today)
-                        .insertAdjacentHTML("beforeend", newToday);
+                        document
+                            .querySelector(DOM.today)
+                            .insertAdjacentHTML("beforeend", newToday);
+                    }
                 }
             });
         },
