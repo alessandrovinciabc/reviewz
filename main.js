@@ -214,17 +214,44 @@ var UIController = (function () {
                 '<div class="entry-element entry-%entryId% entry"><div class="element-text"><span class="entry-info">Last Review: %date% - %reviews% more left - Next: %nextreview%<br></span>%desc%</div><div class="entry-buttons"><button class="delete-btn"><i class="fas fa-trash-alt"></i></button></div></div>';
 
             entries.forEach(function (current) {
+                var dateNextReview;
                 newEntry = newEntryTemplate;
 
                 newEntry = newEntryTemplate.replace("%entryId%", current.id);
                 newEntry = newEntry.replace("%desc%", current.desc);
                 newEntry = newEntry.replace("%date%", current.getLastReview());
-                newEntry = newEntry.replace("%reviews%", current.reviewsLeft + 1);
-
                 newEntry = newEntry.replace(
-                    "%nextreview%",
-                    current.formatReview(+1)
+                    "%reviews%",
+                    current.reviewsLeft + 1
                 );
+
+                dateNextReview = current.formatReview(+1);
+                if (dateNextReview.includes("h")) {
+                    dateNextReview.replace("h", "");
+                    dateNextReview = moment(current.date).add(
+                        parseInt(dateNextReview),
+                        "h"
+                    );
+                    dateNextReview =
+                        dateNextReview.diff(current.date, "h") + "h";
+                } else if (dateNextReview.includes("d")) {
+                    dateNextReview.replace("d", "");
+                    dateNextReview = moment(current.date).add(
+                        parseInt(dateNextReview),
+                        "d"
+                    );
+                    dateNextReview =
+                        dateNextReview.diff(current.date, "d") + "d";
+                } else if (dateNextReview.includes("m")) {
+                    dateNextReview.replace("m", "");
+                    dateNextReview = moment(current.date).add(
+                        parseInt(dateNextReview),
+                        "m"
+                    );
+                    dateNextReview =
+                        dateNextReview.diff(current.date, "m") + "m";
+                }
+                newEntry = newEntry.replace("%nextreview%", dateNextReview);
 
                 DOMentries.insertAdjacentHTML("afterbegin", newEntry);
             });
