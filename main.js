@@ -187,10 +187,27 @@ var UIController = (function () {
         )
     );
 
+    var changeTabsDisplay = function (dis, width, extraSteps) {
+        if (arguments.length === 3) {
+            for (var i = 0; i < tabs.length; ++i) {
+                tabs[i].content.style.display = dis;
+                tabs[i].content.style.width = width;
+                extraSteps(i);
+            }
+        } else {
+            for (var i = 0; i < tabs.length; ++i) {
+                tabs[i].content.style.display = dis;
+                tabs[i].content.style.width = width;
+            }
+        }
+    };
+
     return {
         DOM: DOM,
 
         tabs: tabs,
+
+        currentTab: 0,
 
         getForm: function () {
             var newItem;
@@ -225,12 +242,12 @@ var UIController = (function () {
                     current.reviewsLeft + 1
                 );
 
-                if(current.reviewsLeft > -1){
+                if (current.reviewsLeft > -1) {
                     timeToReview = timeToReview = moment().to(current.date);
-                }else{
+                } else {
                     timeToReview = 'COMPLETE!';
                 }
-                
+
                 newEntry = newEntry.replace('%nextreview%', timeToReview);
 
                 DOMentries.insertAdjacentHTML('afterbegin', newEntry);
@@ -269,8 +286,9 @@ var UIController = (function () {
         },
 
         switchTab: function (tabs, selected) {
-            tabs.forEach(function (current, index) {
+            tabs.forEach((current, index) => {
                 if (current === selected) {
+                    this.currentTab = index;
                     current.tab.classList.add('selected-tab');
 
                     current.content.style.width = '100%';
@@ -287,21 +305,16 @@ var UIController = (function () {
         initTabs: function () {
             var mqPage = window.matchMedia('(max-width: 800px)');
 
-            mqPage.addListener(function (e) {
+            mqPage.addListener((e) => {
                 if (!e.matches) {
-                    for (var i = 0; i < tabs.length; ++i) {
-                        tabs[i].content.style.display = 'flex';
-                        tabs[i].content.style.width = '50%';
-                        tabs[i].tab.classList.remove('selected-tab');
-                    }
-
-                    tabs[0].tab.classList.add('selected-tab');
+                    changeTabsDisplay('flex', '50%', (index) => {
+                        tabs[index].tab.classList.remove('selected-tab');
+                    });
                 } else {
-                    tabs[0].content.style.width = '100%';
-                    for (var i = 1; i < tabs.length; ++i) {
-                        tabs[i].content.style.display = 'none';
-                    }
+                    changeTabsDisplay('none', '100%');
                 }
+                tabs[this.currentTab].content.style.display = 'flex';
+                tabs[this.currentTab].tab.classList.add('selected-tab');
             });
         },
     };
@@ -319,8 +332,6 @@ var controller = (function (data, ui) {
 
             ui.updateEntries(data.getItems());
             ui.updateToday(data.getItems());
-
-            console.log(data.getItems()); //debug
         }
     };
 
@@ -342,8 +353,6 @@ var controller = (function (data, ui) {
 
             ui.updateToday(data.getItems());
             ui.updateEntries(data.getItems());
-
-            console.log(data.getItems()); //debug
         }
     };
 
@@ -369,8 +378,6 @@ var controller = (function (data, ui) {
             data.saveDB();
             ui.updateToday(data.getItems());
             ui.updateEntries(data.getItems());
-
-            console.log(data.getItems()); //debug
         }
     };
 
