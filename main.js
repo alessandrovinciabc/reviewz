@@ -12,11 +12,11 @@ var dataController = (function () {
     };
 
     StudyEntry.prototype.getDateString = function () {
-        return this.date.format("Do MMM YYYY");
+        return this.date.format('Do MMM YYYY');
     };
 
     StudyEntry.prototype.getLastReview = function () {
-        return this.lastReview.format("Do MMM YYYY");
+        return this.lastReview.format('Do MMM YYYY');
     };
 
     StudyEntry.prototype.getDateNext = function () {
@@ -24,31 +24,31 @@ var dataController = (function () {
         this.lastReview = moment();
         switch (this.reviewsLeft) {
             case 9:
-                this.date.add(1, "h");
+                this.date.add(1, 'h');
                 break;
             case 8:
-                this.date.add(1, "d");
+                this.date.add(1, 'd');
                 break;
             case 7:
-                this.date.add(3, "d");
+                this.date.add(3, 'd');
                 break;
             case 6:
-                this.date.add(7, "d");
+                this.date.add(7, 'd');
                 break;
             case 5:
-                this.date.add(14, "d");
+                this.date.add(14, 'd');
                 break;
             case 4:
-                this.date.add(21, "d");
+                this.date.add(21, 'd');
                 break;
             case 3:
-                this.date.add(28, "d");
+                this.date.add(28, 'd');
                 break;
             case 2:
-                this.date.add(2, "M");
+                this.date.add(2, 'M');
                 break;
             case 1:
-                this.date.add(3, "M");
+                this.date.add(3, 'M');
                 break;
         }
 
@@ -61,27 +61,27 @@ var dataController = (function () {
         }
         switch (this.reviewsLeft + offset) {
             case 10:
-                return "now";
+                return 'now';
             case 9:
-                return "1h";
+                return '1h';
             case 8:
-                return "1d";
+                return '1d';
             case 7:
-                return "3d";
+                return '3d';
             case 6:
-                return "7d";
+                return '7d';
             case 5:
-                return "14d";
+                return '14d';
             case 4:
-                return "21d";
+                return '21d';
             case 3:
-                return "28d";
+                return '28d';
             case 2:
-                return "2m";
+                return '2m';
             case 1:
-                return "3m";
+                return '3m';
             case 0:
-                return "DONE!";
+                return 'DONE!';
         }
     };
 
@@ -132,13 +132,13 @@ var dataController = (function () {
             var convertedArr;
 
             convertedArr = JSON.stringify(entriesArr) || [];
-            localStorage.setItem("db", convertedArr);
+            localStorage.setItem('db', convertedArr);
         },
 
         fetchDB: function () {
             var stringDB, reconverted, final;
 
-            stringDB = localStorage.getItem("db");
+            stringDB = localStorage.getItem('db');
             reconverted = JSON.parse(stringDB) || [];
             final = [];
 
@@ -156,15 +156,15 @@ var dataController = (function () {
 
 var UIController = (function () {
     var DOM = {
-        addEntryText: "#desc",
-        addEntryBtn: ".entry-confirm",
-        addEntryCancel: ".entry-cancel",
-        entries: ".container-entries > .container-elements",
-        today: ".container-today > .container-elements",
-        tabToday: ".today-tab",
-        tabEntries: ".entries-tab",
-        todayContainer: ".container-today",
-        entriesContainer: ".container-entries",
+        addEntryText: '#desc',
+        addEntryBtn: '.entry-confirm',
+        addEntryCancel: '.entry-cancel',
+        entries: '.container-entries > .container-elements',
+        today: '.container-today > .container-elements',
+        tabToday: '.today-tab',
+        tabEntries: '.entries-tab',
+        todayContainer: '.container-today',
+        entriesContainer: '.container-entries',
     };
 
     var Tab = function (tab, content) {
@@ -200,7 +200,7 @@ var UIController = (function () {
         },
 
         clearForm: function () {
-            document.querySelector(DOM.addEntryText).value = "";
+            document.querySelector(DOM.addEntryText).value = '';
         },
 
         updateEntries: function (entries) {
@@ -208,52 +208,32 @@ var UIController = (function () {
 
             DOMentries = document.querySelector(DOM.entries);
 
-            DOMentries.innerHTML = "";
+            DOMentries.innerHTML = '';
 
             newEntryTemplate =
                 '<div class="entry-element entry-%entryId% entry"><div class="element-text"><span class="entry-info">Last Review: %date% - %reviews% more left - Next: %nextreview%<br></span>%desc%</div><div class="entry-buttons"><button class="delete-btn"><i class="fas fa-trash-alt"></i></button></div></div>';
 
             entries.forEach(function (current) {
-                var dateNextReview;
+                var timeDifference;
                 newEntry = newEntryTemplate;
 
-                newEntry = newEntryTemplate.replace("%entryId%", current.id);
-                newEntry = newEntry.replace("%desc%", current.desc);
-                newEntry = newEntry.replace("%date%", current.getLastReview());
+                newEntry = newEntryTemplate.replace('%entryId%', current.id);
+                newEntry = newEntry.replace('%desc%', current.desc);
+                newEntry = newEntry.replace('%date%', current.getLastReview());
                 newEntry = newEntry.replace(
-                    "%reviews%",
+                    '%reviews%',
                     current.reviewsLeft + 1
                 );
 
-                dateNextReview = current.formatReview(+1);
-                if (dateNextReview.includes("h")) {
-                    dateNextReview.replace("h", "");
-                    dateNextReview = moment(current.date).add(
-                        parseInt(dateNextReview),
-                        "h"
-                    );
-                    dateNextReview =
-                        dateNextReview.diff(current.date, "h") + "h";
-                } else if (dateNextReview.includes("d")) {
-                    dateNextReview.replace("d", "");
-                    dateNextReview = moment(current.date).add(
-                        parseInt(dateNextReview),
-                        "d"
-                    );
-                    dateNextReview =
-                        dateNextReview.diff(current.date, "d") + "d";
-                } else if (dateNextReview.includes("m")) {
-                    dateNextReview.replace("m", "");
-                    dateNextReview = moment(current.date).add(
-                        parseInt(dateNextReview),
-                        "m"
-                    );
-                    dateNextReview =
-                        dateNextReview.diff(current.date, "m") + "m";
+                if(current.reviewsLeft > -1){
+                    timeToReview = timeToReview = moment().to(current.date);
+                }else{
+                    timeToReview = 'COMPLETE!';
                 }
-                newEntry = newEntry.replace("%nextreview%", dateNextReview);
+                
+                newEntry = newEntry.replace('%nextreview%', timeToReview);
 
-                DOMentries.insertAdjacentHTML("afterbegin", newEntry);
+                DOMentries.insertAdjacentHTML('afterbegin', newEntry);
             });
         },
 
@@ -264,25 +244,25 @@ var UIController = (function () {
             todayTemplate =
                 '<div class="today-element today-%id%"><div class="element-text">%desc%</div><div class="next-review-text">+%nextreview%</div><button class="today-confirm"><i class="far fa-check-circle"></i></button></div>';
 
-            document.querySelector(DOM.today).innerHTML = "";
+            document.querySelector(DOM.today).innerHTML = '';
 
             entries.forEach(function (current) {
                 if (current.reviewsLeft > -1) {
                     newToday = todayTemplate;
-                    if (current.date.isSameOrBefore(todaysDate, "day")) {
+                    if (current.date.isSameOrBefore(todaysDate, 'day')) {
                         newToday = todayTemplate.replace(
-                            "%desc%",
+                            '%desc%',
                             current.desc
                         );
-                        newToday = newToday.replace("%id%", current.id);
+                        newToday = newToday.replace('%id%', current.id);
                         newToday = newToday.replace(
-                            "%nextreview%",
+                            '%nextreview%',
                             current.formatReview()
                         );
 
                         document
                             .querySelector(DOM.today)
-                            .insertAdjacentHTML("beforeend", newToday);
+                            .insertAdjacentHTML('beforeend', newToday);
                     }
                 }
             });
@@ -291,35 +271,35 @@ var UIController = (function () {
         switchTab: function (tabs, selected) {
             tabs.forEach(function (current, index) {
                 if (current === selected) {
-                    current.tab.classList.add("selected-tab");
+                    current.tab.classList.add('selected-tab');
 
-                    current.content.style.width = "100%";
-                    current.content.style.display = "flex";
+                    current.content.style.width = '100%';
+                    current.content.style.display = 'flex';
                 } else {
-                    current.tab.classList.remove("selected-tab");
+                    current.tab.classList.remove('selected-tab');
 
-                    current.content.style.width = "80%";
-                    current.content.style.display = "none";
+                    current.content.style.width = '80%';
+                    current.content.style.display = 'none';
                 }
             });
         },
 
         initTabs: function () {
-            var mqPage = window.matchMedia("(max-width: 800px)");
+            var mqPage = window.matchMedia('(max-width: 800px)');
 
             mqPage.addListener(function (e) {
                 if (!e.matches) {
                     for (var i = 0; i < tabs.length; ++i) {
-                        tabs[i].content.style.display = "flex";
-                        tabs[i].content.style.width = "50%";
-                        tabs[i].tab.classList.remove("selected-tab");
+                        tabs[i].content.style.display = 'flex';
+                        tabs[i].content.style.width = '50%';
+                        tabs[i].tab.classList.remove('selected-tab');
                     }
 
-                    tabs[0].tab.classList.add("selected-tab");
+                    tabs[0].tab.classList.add('selected-tab');
                 } else {
-                    tabs[0].content.style.width = "100%";
+                    tabs[0].content.style.width = '100%';
                     for (var i = 1; i < tabs.length; ++i) {
-                        tabs[i].content.style.display = "none";
+                        tabs[i].content.style.display = 'none';
                     }
                 }
             });
@@ -333,7 +313,7 @@ var controller = (function (data, ui) {
     var addItem = function () {
         var newEntry = ui.getForm();
 
-        if (newEntry !== "") {
+        if (newEntry !== '') {
             data.addItem(newEntry);
             ui.clearForm();
 
@@ -349,12 +329,12 @@ var controller = (function (data, ui) {
 
         if (
             event.target.parentNode.parentNode.parentNode.classList.contains(
-                "entry"
+                'entry'
             )
         ) {
             id = event.target.parentNode.parentNode.parentNode.classList[1].replace(
-                "entry-",
-                ""
+                'entry-',
+                ''
             );
             id = parseInt(id);
 
@@ -370,10 +350,10 @@ var controller = (function (data, ui) {
     var confirmReview = function (event) {
         var id, indexOfElement, clickedElement;
 
-        if (event.target.parentNode.classList.contains("today-confirm")) {
+        if (event.target.parentNode.classList.contains('today-confirm')) {
             id = event.target.parentNode.parentNode.classList[1].replace(
-                "today-",
-                ""
+                'today-',
+                ''
             );
             id = parseInt(id);
 
@@ -397,22 +377,22 @@ var controller = (function (data, ui) {
     var setupEventListeners = function () {
         document
             .querySelector(DOM.addEntryBtn)
-            .addEventListener("click", function () {
+            .addEventListener('click', function () {
                 addItem();
             });
 
         document
             .querySelector(DOM.addEntryCancel)
-            .addEventListener("click", function () {
+            .addEventListener('click', function () {
                 ui.clearForm();
             });
 
-        document.addEventListener("keydown", function (event) {
+        document.addEventListener('keydown', function (event) {
             if (
                 document.activeElement ===
                 document.querySelector(DOM.addEntryText)
             ) {
-                if (event.key === "Enter") {
+                if (event.key === 'Enter') {
                     addItem();
                 }
             }
@@ -420,23 +400,23 @@ var controller = (function (data, ui) {
 
         document
             .querySelector(DOM.today)
-            .addEventListener("click", confirmReview);
+            .addEventListener('click', confirmReview);
 
         document
             .querySelector(DOM.tabToday)
-            .addEventListener("click", function () {
+            .addEventListener('click', function () {
                 ui.switchTab(ui.tabs, ui.tabs[0]);
             });
 
         document
             .querySelector(DOM.tabEntries)
-            .addEventListener("click", function () {
+            .addEventListener('click', function () {
                 ui.switchTab(ui.tabs, ui.tabs[1]);
             });
 
         document
             .querySelector(DOM.entriesContainer)
-            .addEventListener("click", removeItem);
+            .addEventListener('click', removeItem);
     };
 
     return {
