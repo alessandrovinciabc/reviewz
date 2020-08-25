@@ -432,7 +432,10 @@ var controller = (function (data, ui) {
             ui.initTabs();
             ui.updateToday(data.getItems());
             ui.updateEntries(data.getItems());
-            setInterval(()=>{ui.updateEntries(data.getItems());}, 60000);
+            setInterval(() => {
+                ui.updateEntries(data.getItems());
+                ui.updateToday(data.getItems());
+            }, 60000);
         },
     };
 })(dataController, UIController);
