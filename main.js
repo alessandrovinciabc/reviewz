@@ -228,10 +228,9 @@ var UIController = (function () {
             DOMentries.innerHTML = '';
 
             newEntryTemplate =
-                '<div class="entry-element entry-%entryId% entry"><div class="element-text"><span class="entry-info">Last Review: %date% - %reviews% more left - Next: %nextreview%<br></span>%desc%</div><div class="entry-buttons"><button class="delete-btn"><i class="fas fa-trash-alt"></i></button></div></div>';
+                '<div class="entry-element entry-%entryId% entry"><div class="element-text"><span class="entry-info">Last Review: %date% - %reviews% more left - <span class="next-review">Next: %nextreview%</span><br></span>%desc%</div><div class="entry-buttons"><button class="delete-btn"><i class="fas fa-trash-alt"></i></button></div></div>';
 
             entries.forEach(function (current) {
-                var timeDifference;
                 newEntry = newEntryTemplate;
 
                 newEntry = newEntryTemplate.replace('%entryId%', current.id);
@@ -433,6 +432,7 @@ var controller = (function (data, ui) {
             ui.initTabs();
             ui.updateToday(data.getItems());
             ui.updateEntries(data.getItems());
+            setInterval(()=>{ui.updateEntries(data.getItems());}, 60000);
         },
     };
 })(dataController, UIController);
