@@ -1,92 +1,92 @@
-var dataController = (function () {
-    var entriesArr = [];
+let dataController = (function () {
+    let entriesArr = [];
 
-    //1. Get data from local storage
-
-    var StudyEntry = function (desc, id) {
-        this.id = id;
-        this.desc = desc;
-        this.date = moment();
-        this.lastReview = moment();
-        this.reviewsLeft = 9; //1h, 1d, 3d, 7d, 14d, 21d, 28d, 2m, 3m
-    };
-
-    StudyEntry.prototype.getDateString = function () {
-        return this.date.format('Do MMM YYYY');
-    };
-
-    StudyEntry.prototype.getLastReview = function () {
-        return this.lastReview.format('Do MMM YYYY');
-    };
-
-    StudyEntry.prototype.getDateNext = function () {
-        this.date = moment();
-        this.lastReview = moment();
-        switch (this.reviewsLeft) {
-            case 9:
-                this.date.add(1, 'h');
-                break;
-            case 8:
-                this.date.add(1, 'd');
-                break;
-            case 7:
-                this.date.add(3, 'd');
-                break;
-            case 6:
-                this.date.add(7, 'd');
-                break;
-            case 5:
-                this.date.add(14, 'd');
-                break;
-            case 4:
-                this.date.add(21, 'd');
-                break;
-            case 3:
-                this.date.add(28, 'd');
-                break;
-            case 2:
-                this.date.add(2, 'M');
-                break;
-            case 1:
-                this.date.add(3, 'M');
-                break;
+    class StudyEntry {
+        constructor(desc, id) {
+            this.id = id;
+            this.desc = desc;
+            this.date = moment();
+            this.lastReview = moment();
+            this.reviewsLeft = 9; //1h, 1d, 3d, 7d, 14d, 21d, 28d, 2m, 3m
         }
 
-        this.reviewsLeft--;
-    };
-
-    StudyEntry.prototype.formatReview = function (offset) {
-        if (!offset) {
-            offset = 0;
+        getDateString(){
+            return this.date.format('Do MMM YYYY');
         }
-        switch (this.reviewsLeft + offset) {
-            case 10:
-                return 'now';
-            case 9:
-                return '1h';
-            case 8:
-                return '1d';
-            case 7:
-                return '3d';
-            case 6:
-                return '7d';
-            case 5:
-                return '14d';
-            case 4:
-                return '21d';
-            case 3:
-                return '28d';
-            case 2:
-                return '2m';
-            case 1:
-                return '3m';
-            case 0:
-                return 'DONE!';
-        }
-    };
 
-    var convertElement = function (el) {
-        var temp;
+        getLastReview(){
+            return this.lastReview.format('Do MMM YYYY');
+        }
+    
+        getDateNext(){
+            this.date = moment();
+            this.lastReview = moment();
+            switch (this.reviewsLeft) {
+                case 9:
+                    this.date.add(1, 'h');
+                    break;
+                case 8:
+                    this.date.add(1, 'd');
+                    break;
+                case 7:
+                    this.date.add(3, 'd');
+                    break;
+                case 6:
+                    this.date.add(7, 'd');
+                    break;
+                case 5:
+                    this.date.add(14, 'd');
+                    break;
+                case 4:
+                    this.date.add(21, 'd');
+                    break;
+                case 3:
+                    this.date.add(28, 'd');
+                    break;
+                case 2:
+                    this.date.add(2, 'M');
+                    break;
+                case 1:
+                    this.date.add(3, 'M');
+                    break;
+            }
+    
+            this.reviewsLeft--;
+        }
+    
+        formatReview(offset) {
+            if (!offset) {
+                offset = 0;
+            }
+            switch (this.reviewsLeft + offset) {
+                case 10:
+                    return 'now';
+                case 9:
+                    return '1h';
+                case 8:
+                    return '1d';
+                case 7:
+                    return '3d';
+                case 6:
+                    return '7d';
+                case 5:
+                    return '14d';
+                case 4:
+                    return '21d';
+                case 3:
+                    return '28d';
+                case 2:
+                    return '2m';
+                case 1:
+                    return '3m';
+                case 0:
+                    return 'DONE!';
+            }
+        }
+    }
+
+    let convertElement = (el) => {
+        let temp;
 
         temp = new StudyEntry();
         Object.assign(temp, el);
@@ -102,7 +102,7 @@ var dataController = (function () {
 
     return {
         addItem: function (newItem) {
-            var newId, lastEntryId;
+            let newId, lastEntryId;
 
             if (entriesArr.length > 0) {
                 lastEntryId = entriesArr[entriesArr.length - 1].id;
@@ -116,7 +116,7 @@ var dataController = (function () {
         },
 
         removeItem: function (id) {
-            entriesArr.forEach(function (element, index) {
+            entriesArr.forEach((element, index) => {
                 if (element.id === id) {
                     entriesArr.splice(index, 1);
                 }
@@ -129,21 +129,21 @@ var dataController = (function () {
         },
 
         saveDB: function () {
-            var convertedArr;
+            let convertedArr;
 
             convertedArr = JSON.stringify(entriesArr) || [];
             localStorage.setItem('db', convertedArr);
         },
 
         fetchDB: function () {
-            var stringDB, reconverted, final;
+            let stringDB, reconverted, final;
 
             stringDB = localStorage.getItem('db');
             reconverted = JSON.parse(stringDB) || [];
             final = [];
 
-            reconverted.forEach(function (el) {
-                var processed;
+            reconverted.forEach((el) => {
+                let processed;
                 processed = convertElement(el);
 
                 final.push(processed);
@@ -154,8 +154,8 @@ var dataController = (function () {
     };
 })();
 
-var UIController = (function () {
-    var DOM = {
+let UIController = (() => {
+    let DOM = {
         addEntryText: '#desc',
         addEntryBtn: '.entry-confirm',
         addEntryCancel: '.entry-cancel',
@@ -167,12 +167,14 @@ var UIController = (function () {
         entriesContainer: '.container-entries',
     };
 
-    var Tab = function (tab, content) {
-        this.tab = tab;
-        this.content = content;
-    };
+    class Tab {
+        constructor(tab, content) {
+            this.tab = tab;
+            this.content = content;
+        }
+    }
 
-    var tabs = [];
+    let tabs = [];
 
     tabs.push(
         new Tab(
@@ -187,15 +189,15 @@ var UIController = (function () {
         )
     );
 
-    var changeTabsDisplay = function (dis, width, extraSteps) {
+    let changeTabsDisplay = function(dis, width, extraSteps) {
         if (arguments.length === 3) {
-            for (var i = 0; i < tabs.length; ++i) {
+            for (let i = 0; i < tabs.length; ++i) {
                 tabs[i].content.style.display = dis;
                 tabs[i].content.style.width = width;
                 extraSteps(i);
             }
         } else {
-            for (var i = 0; i < tabs.length; ++i) {
+            for (let i = 0; i < tabs.length; ++i) {
                 tabs[i].content.style.display = dis;
                 tabs[i].content.style.width = width;
             }
@@ -210,7 +212,7 @@ var UIController = (function () {
         currentTab: 0,
 
         getForm: function () {
-            var newItem;
+            let newItem;
             newItem = document.querySelector(DOM.addEntryText).value;
 
             return newItem;
@@ -221,7 +223,7 @@ var UIController = (function () {
         },
 
         updateEntries: function (entries) {
-            var newEntryTemplate, newEntry, DOMentries;
+            let newEntryTemplate, newEntry, DOMentries;
 
             DOMentries = document.querySelector(DOM.entries);
 
@@ -230,7 +232,7 @@ var UIController = (function () {
             newEntryTemplate =
                 '<div class="entry-element entry-%entryId% entry"><div class="element-text"><span class="entry-info">Last Review: %date% - %reviews% more left - <span class="next-review">Next: %nextreview%</span><br></span>%desc%</div><div class="entry-buttons"><button class="delete-btn"><i class="fas fa-trash-alt"></i></button></div></div>';
 
-            entries.forEach(function (current) {
+            entries.forEach((current) => {
                 newEntry = newEntryTemplate;
 
                 newEntry = newEntryTemplate.replace('%entryId%', current.id);
@@ -254,7 +256,7 @@ var UIController = (function () {
         },
 
         updateToday: function (entries) {
-            var todaysDate, todayTemplate, newToday;
+            let todaysDate, todayTemplate, newToday;
             todaysDate = moment();
 
             todayTemplate =
@@ -262,7 +264,7 @@ var UIController = (function () {
 
             document.querySelector(DOM.today).innerHTML = '';
 
-            entries.forEach(function (current) {
+            entries.forEach((current) => {
                 if (current.reviewsLeft > -1) {
                     newToday = todayTemplate;
                     if (current.date.isSameOrBefore(todaysDate, 'day')) {
@@ -302,7 +304,7 @@ var UIController = (function () {
         },
 
         initTabs: function () {
-            var mqPage = window.matchMedia('(max-width: 800px)');
+            let mqPage = window.matchMedia('(max-width: 800px)');
 
             mqPage.addListener((e) => {
                 if (!e.matches) {
@@ -319,11 +321,11 @@ var UIController = (function () {
     };
 })();
 
-var controller = (function (data, ui) {
-    var DOM = ui.DOM;
+let controller = ((data, ui) => {
+    let DOM = ui.DOM;
 
-    var addItem = function () {
-        var newEntry = ui.getForm();
+    let addItem = () => {
+        let newEntry = ui.getForm();
 
         if (newEntry !== '') {
             data.addItem(newEntry);
@@ -334,8 +336,8 @@ var controller = (function (data, ui) {
         }
     };
 
-    var removeItem = function (event) {
-        var id, index;
+    let removeItem = (event) => {
+        let id;
 
         if (
             event.target.parentNode.parentNode.parentNode.classList.contains(
@@ -355,8 +357,8 @@ var controller = (function (data, ui) {
         }
     };
 
-    var confirmReview = function (event) {
-        var id, indexOfElement, clickedElement;
+    let confirmReview = (event) => {
+        let id, indexOfElement, clickedElement;
 
         if (event.target.parentNode.classList.contains('today-confirm')) {
             id = event.target.parentNode.parentNode.classList[1].replace(
@@ -365,7 +367,7 @@ var controller = (function (data, ui) {
             );
             id = parseInt(id);
 
-            data.getItems().forEach(function (current, index) {
+            data.getItems().forEach((current, index) => {
                 if (current.id === id) {
                     indexOfElement = index;
                 }
@@ -380,20 +382,16 @@ var controller = (function (data, ui) {
         }
     };
 
-    var setupEventListeners = function () {
+    let setupEventListeners = () => {
         document
             .querySelector(DOM.addEntryBtn)
-            .addEventListener('click', function () {
-                addItem();
-            });
+            .addEventListener('click', addItem);
 
         document
             .querySelector(DOM.addEntryCancel)
-            .addEventListener('click', function () {
-                ui.clearForm();
-            });
+            .addEventListener('click', ui.clearForm);
 
-        document.addEventListener('keydown', function (event) {
+        document.addEventListener('keydown', (event) => {
             if (
                 document.activeElement ===
                 document.querySelector(DOM.addEntryText)
@@ -408,17 +406,13 @@ var controller = (function (data, ui) {
             .querySelector(DOM.today)
             .addEventListener('click', confirmReview);
 
-        document
-            .querySelector(DOM.tabToday)
-            .addEventListener('click', function () {
-                ui.switchTab(ui.tabs, ui.tabs[0]);
-            });
+        document.querySelector(DOM.tabToday).addEventListener('click', () => {
+            ui.switchTab(ui.tabs, ui.tabs[0]);
+        });
 
-        document
-            .querySelector(DOM.tabEntries)
-            .addEventListener('click', function () {
-                ui.switchTab(ui.tabs, ui.tabs[1]);
-            });
+        document.querySelector(DOM.tabEntries).addEventListener('click', () => {
+            ui.switchTab(ui.tabs, ui.tabs[1]);
+        });
 
         document
             .querySelector(DOM.entriesContainer)
