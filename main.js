@@ -10,15 +10,15 @@ let dataController = (function () {
             this.reviewsLeft = 9; //1h, 1d, 3d, 7d, 14d, 21d, 28d, 2m, 3m
         }
 
-        getDateString(){
+        getDateString() {
             return this.date.format('Do MMM YYYY');
         }
 
-        getLastReview(){
+        getLastReview() {
             return this.lastReview.format('Do MMM YYYY');
         }
-    
-        getDateNext(){
+
+        getDateNext() {
             this.date = moment();
             this.lastReview = moment();
             switch (this.reviewsLeft) {
@@ -50,10 +50,10 @@ let dataController = (function () {
                     this.date.add(3, 'M');
                     break;
             }
-    
+
             this.reviewsLeft--;
         }
-    
+
         formatReview(offset) {
             if (!offset) {
                 offset = 0;
@@ -189,7 +189,7 @@ let UIController = (() => {
         )
     );
 
-    let changeTabsDisplay = function(dis, width, extraSteps) {
+    let changeTabsDisplay = function (dis, width, extraSteps) {
         if (arguments.length === 3) {
             for (let i = 0; i < tabs.length; ++i) {
                 tabs[i].content.style.display = dis;
@@ -342,7 +342,8 @@ let controller = ((data, ui) => {
         if (
             event.target.parentNode.parentNode.parentNode.classList.contains(
                 'entry'
-            )
+            ) &&
+            event.target.parentNode.classList.contains('delete-btn')
         ) {
             id = event.target.parentNode.parentNode.parentNode.classList[1].replace(
                 'entry-',
