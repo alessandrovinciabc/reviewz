@@ -311,6 +311,8 @@ let UIController = (() => {
                     changeTabsDisplay('flex', '50%', (index) => {
                         tabs[index].tab.classList.remove('selected-tab');
                     });
+                    tabs[0].content.style.width = '40%';
+                    tabs[1].content.style.width = '60%';
                 } else {
                     changeTabsDisplay('none', '100%');
                 }

@@ -33,7 +33,7 @@ font-family: 'Slabo 27px', serif;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    width: 50%;
+    width: 40%;
 
     border-right: 2px solid #cccccc;
 }
@@ -43,7 +43,7 @@ font-family: 'Slabo 27px', serif;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    width: 50%;
+    width: 60%;
 
     border-left: 2px solid #cccccc;
 }
