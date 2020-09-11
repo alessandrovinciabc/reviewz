@@ -124,6 +124,8 @@ let dataController = (function () {
             this.saveDB();
         },
 
+        updateItem: function (id, newDesc, newNumReviews) {},
+
         getItems: function () {
             return entriesArr;
         },
@@ -211,6 +213,8 @@ let UIController = (() => {
 
         currentTab: 0,
 
+        isUpdateRequired: true,
+
         getForm: function () {
             let newItem;
             newItem = document.querySelector(DOM.addEntryText).value;
@@ -230,7 +234,7 @@ let UIController = (() => {
             DOMentries.innerHTML = '';
 
             newEntryTemplate =
-                '<div class="entry-element entry-%entryId% entry"><div class="element-text"><span class="entry-info">Last Review: %date% - %reviews% more left - <span class="next-review">Next: %nextreview%</span><br></span>%desc%</div><div class="entry-buttons"><button class="delete-btn"><i class="fas fa-trash-alt"></i></button></div></div>';
+                '<div class="entry-element entry-%entryId% entry"><div class="element-text"><span class="entry-info">Last Review: %date% - %reviews% more left - <span class="next-review">Next: %nextreview%</span><br></span><span><span class="item-desc">%desc%</span><span class="edit-form"><input class="edit-control edit-desc" type="text" autocomplete="off"><select class="edit-control edit-reviews"><option value="10">10</option><option value="9">9</option><option value="8">8</option><option value="7">7</option><option value="6">6</option><option value="5">5</option><option value="4">4</option><option value="3">3</option><option value="2">2</option><option value="1">1</option><option value="0">0</option></select><button class="edit-confirm"><i class="far fa-check-circle"></i></button></span></span></div><div class="entry-buttons"><button class="edit-btn"><i class="fas fa-edit"></i></button><button class="delete-btn"><i class="fas fa-trash-alt"></i></button></div></div>';
 
             entries.forEach((current) => {
                 newEntry = newEntryTemplate;
@@ -306,7 +310,7 @@ let UIController = (() => {
         initTabs: function () {
             let mqPage = window.matchMedia('(max-width: 800px)');
 
-            mqPage.addListener((e) => {
+            mqPage.addEventListener('change', (e) => {
                 if (!e.matches) {
                     changeTabsDisplay('flex', '50%', (index) => {
                         tabs[index].tab.classList.remove('selected-tab');
@@ -338,7 +342,7 @@ let controller = ((data, ui) => {
         }
     };
 
-    let removeItem = (event) => {
+    let handleItemButtons = (event) => {
         let id;
 
         if (
@@ -354,6 +358,41 @@ let controller = ((data, ui) => {
             id = parseInt(id);
 
             data.removeItem(id);
+
+            ui.updateToday(data.getItems());
+            ui.updateEntries(data.getItems());
+        } else if (
+            event.target.parentNode.parentNode.parentNode.classList.contains(
+                'entry'
+            ) &&
+            event.target.parentNode.classList.contains('edit-btn')
+        ) {
+            id = event.target.parentNode.parentNode.parentNode.classList[1].replace(
+                'entry-',
+                ''
+            );
+            id = parseInt(id);
+
+            ui.isUpdateRequired = ui.isUpdateRequired ? false : true; //toggles edit form
+
+            const [itemDesc, editForm] = event.target.parentNode.parentNode.parentNode.children[0].children[1].children;
+
+            editForm.style.display = ui.isUpdateRequired
+                ? 'none'
+                : 'initial';  //Hide/show edit form
+
+            itemDesc.style.display = ui.isUpdateRequired
+                ? 'initial'
+                : 'none'; //Hide/show item description
+        } else if (
+            event.target.parentNode.parentNode.parentNode.parentNode.classList.contains(
+                'entry'
+            ) &&
+            event.target.parentNode.classList.contains('edit-confirm')
+        ) {
+            const [newDesc, newNumReviews] = event.target.parentNode.parentNode;
+
+            data.updateItem(id, newDesc, newNumReviews);
 
             ui.updateToday(data.getItems());
             ui.updateEntries(data.getItems());
@@ -419,7 +458,7 @@ let controller = ((data, ui) => {
 
         document
             .querySelector(DOM.entriesContainer)
-            .addEventListener('click', removeItem);
+            .addEventListener('click', handleItemButtons);
     };
 
     return {
@@ -430,8 +469,10 @@ let controller = ((data, ui) => {
             ui.updateToday(data.getItems());
             ui.updateEntries(data.getItems());
             setInterval(() => {
-                ui.updateEntries(data.getItems());
-                ui.updateToday(data.getItems());
+                if (ui.isUpdateRequired) {
+                    ui.updateEntries(data.getItems());
+                    ui.updateToday(data.getItems());
+                }
             }, 60000);
         },
     };

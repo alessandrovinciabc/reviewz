@@ -170,6 +170,47 @@ font-family: 'Slabo 27px', serif;
     color: #cccccc;
 }
 
+.edit-form{
+    display: none;
+}
+
+.edit-control{
+    border: 1px solid black;
+
+    padding-left: 5px;
+    font-family: 'Alata', sans-serif;
+}
+
+.edit-control:focus{
+    outline: none;
+}
+
+.edit-desc{
+    width: 70%;
+}
+
+.edit-reviews{
+    width: 10%;
+}
+
+.edit-confirm{
+    margin-left: auto;
+    outline: none;
+    cursor: pointer;
+    outline: none;
+    background-color: transparent;
+    color: #00b7c2;
+    font-size: 1.3rem;
+}
+
+.edit-confirm:active{
+    color: green;
+}
+
+.edit-btn:active{
+    color: #0f4c75;
+}
+
 .delete-btn:active{
     color: red;
 }
