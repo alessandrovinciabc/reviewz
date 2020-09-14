@@ -354,90 +354,101 @@ let controller = ((data, ui) => {
     let handleItemButtons = (event) => {
         let id;
 
+        //To avoid errors related with random clicks on the page.
         try {
-            //To avoid errors related with random clicks on the page.
-            if (
-                event.target.parentNode.parentNode.parentNode.classList.contains(
-                    'entry'
-                ) &&
-                event.target.parentNode.classList.contains('delete-btn')
-            ) {
-                id = event.target.parentNode.parentNode.parentNode.classList[1].replace(
-                    'entry-',
-                    ''
-                );
+            let entryDiv, isInsideAnEntry, btnPressed, operationToPerform;
+
+            let itemDesc,
+                editForm,
+                editDesc,
+                editReviews,
+                newDesc,
+                newNumReviews;
+
+            btnPressed = event.target.parentNode;
+
+            //1.Check which button was pressed
+            //2.Set attributes relative to the operation to perform
+            if (btnPressed.classList.contains('delete-btn')) {
+                entryDiv = event.target.parentNode.parentNode.parentNode;
+                isInsideAnEntry = entryDiv.classList.contains('entry');
+                operationToPerform = 'delete';
+            } else if (btnPressed.classList.contains('edit-btn')) {
+                entryDiv = event.target.parentNode.parentNode.parentNode;
+                isInsideAnEntry = entryDiv.classList.contains('entry');
+                operationToPerform = 'edit';
+            } else if (btnPressed.classList.contains('edit-confirm')) {
+                entryDiv =
+                    event.target.parentNode.parentNode.parentNode.parentNode
+                        .parentNode;
+                isInsideAnEntry = entryDiv.classList.contains('entry');
+                operationToPerform = 'confirm-edit';
+            }
+
+            //Check if the buttons were pressed inside an entry
+            if (isInsideAnEntry) {
+                id = entryDiv.classList[1].replace('entry-', '');
                 id = parseInt(id);
+                switch (operationToPerform) {
+                    case 'delete': //Delete button was pressed
+                        data.removeItem(id);
 
-                data.removeItem(id);
+                        ui.updateToday(data.getItems());
+                        ui.updateEntries(data.getItems());
+                        break;
+                    case 'edit': //Edit button was pressed
+                        ui.isUpdateRequired = ui.isUpdateRequired
+                            ? false
+                            : true; //toggles edit form
 
-                ui.updateToday(data.getItems());
-                ui.updateEntries(data.getItems());
-            } else if (
-                event.target.parentNode.parentNode.parentNode.classList.contains(
-                    'entry'
-                ) &&
-                event.target.parentNode.classList.contains('edit-btn')
-            ) {
-                id = event.target.parentNode.parentNode.parentNode.classList[1].replace(
-                    'entry-',
-                    ''
-                );
-                id = parseInt(id);
+                        [
+                            itemDesc,
+                            editForm,
+                        ] = entryDiv.children[0].children[1].children;
 
-                ui.isUpdateRequired = ui.isUpdateRequired ? false : true; //toggles edit form
+                        [editDesc, editReviews] = editForm.children;
 
-                const [
-                    itemDesc,
-                    editForm,
-                ] = event.target.parentNode.parentNode.parentNode.children[0].children[1].children;
+                        const itemToChange = data
+                            .getItems()
+                            .find((curr) => curr.id === id);
+                        const currentNumOfReviews = itemToChange.reviewsLeft;
 
-                const [editDesc, editReviews] = editForm.children;
+                        editForm.style.display = ui.isUpdateRequired
+                            ? 'none'
+                            : 'initial'; //Hide/show edit form
 
-                const itemToChange = data
-                    .getItems()
-                    .find((curr) => curr.id === id);
-                const currentNumOfReviews = itemToChange.reviewsLeft;
+                        itemDesc.style.display = ui.isUpdateRequired
+                            ? 'initial'
+                            : 'none'; //Hide/show item description
 
-                console.log(currentNumOfReviews);
+                        editDesc.value = itemDesc.textContent;
 
-                editForm.style.display = ui.isUpdateRequired
-                    ? 'none'
-                    : 'initial'; //Hide/show edit form
+                        editReviews.selectedIndex = currentNumOfReviews + 1;
 
-                itemDesc.style.display = ui.isUpdateRequired
-                    ? 'initial'
-                    : 'none'; //Hide/show item description
+                        break;
+                    case 'confirm-edit': //Confirm edit button was pressed
+                        [
+                            newDesc,
+                            newNumReviews,
+                        ] = event.target.parentNode.parentNode.children;
 
-                editDesc.value = itemDesc.textContent;
+                        [
+                            itemDesc,
+                            editForm,
+                        ] = event.target.parentNode.parentNode.parentNode.children;
 
-                editReviews.selectedIndex = currentNumOfReviews + 1;
-            } else if (
-                event.target.parentNode.parentNode.parentNode.parentNode.parentNode.classList.contains(
-                    'entry'
-                ) &&
-                event.target.parentNode.classList.contains('edit-confirm')
-            ) {
-                const [
-                    newDesc,
-                    newNumReviews,
-                ] = event.target.parentNode.parentNode.children;
-                const [
-                    itemDesc,
-                    editForm,
-                ] = event.target.parentNode.parentNode.parentNode.children;
+                        data.updateItem(
+                            id,
+                            newDesc.value,
+                            parseInt(newNumReviews.value) - 1
+                        );
+                        itemDesc.style.display = 'initial';
+                        editForm.style.display = 'none';
 
-                id = event.target.parentNode.parentNode.parentNode.parentNode.parentNode.classList[1].replace(
-                    'entry-',
-                    ''
-                );
-                id = parseInt(id);
-
-                data.updateItem(id, newDesc.value, parseInt(newNumReviews.value) - 1);
-                itemDesc.style.display = 'initial';
-                editForm.style.display = 'none';
-
-                ui.updateToday(data.getItems());
-                ui.updateEntries(data.getItems());
+                        ui.updateToday(data.getItems());
+                        ui.updateEntries(data.getItems());
+                        break;
+                }
             }
         } catch {}
     };
