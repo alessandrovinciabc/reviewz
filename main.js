@@ -86,18 +86,18 @@ let dataController = (function () {
     }
 
     let convertElement = (el) => {
-        let temp;
+        let convertedElement;
 
-        temp = new StudyEntry();
-        Object.assign(temp, el);
+        convertedElement = new StudyEntry();
+        Object.assign(convertedElement, el);
 
-        temp.id = parseInt(temp.id);
+        convertedElement.id = parseInt(convertedElement.id);
 
-        temp.date = moment(temp.date);
-        temp.lastReview = moment(temp.lastReview);
-        temp.reviewsLeft = parseInt(temp.reviewsLeft);
+        convertedElement.date = moment(convertedElement.date);
+        convertedElement.lastReview = moment(convertedElement.lastReview);
+        convertedElement.reviewsLeft = parseInt(convertedElement.reviewsLeft);
 
-        return temp;
+        return convertedElement;
     };
 
     return {
